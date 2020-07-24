@@ -1,0 +1,11 @@
+[package]
+name = "soil-i2c"
+version = "0.1.0"
+authors = ["Cole Heslinga <cole.heslinga@gmail.com>"]
+
+[dependencies]
+stemma_soil_sensor = "0.1.5"
+embedded-hal = "0.2.4"
+rppal = "0.11.3"
+linux-embedded-hal = "0.3.0"
+
