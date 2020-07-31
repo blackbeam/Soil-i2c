@@ -1,57 +1,36 @@
-extern crate embedded_hal;
-extern crate linux_embedded_hal;
-extern crate rppal;
-extern crate stemma_soil_sensor;
+mod soil_lib;
 
-//muxer: Writes a single byte to the first register of the multiplexer,
-//changing the port that it will be listening on.
+pub use crate::soil_lib::i2conn;
+
+//sensor_read: This function is essentially just an alias to combine the muxer
+//and sense functions into one, and to handle the error. (Look at me, handling
+//errors like a normal programmer :P)
 //
-fn muxer(channel: u8) -> Result<(), rppal::i2c::Error> {
-    use rppal::i2c::I2c;
-    const MUXADDR: u16 = 0x70;
 
-    let mut mdev = I2c::new()?;
-    mdev.set_slave_address(MUXADDR)?;
-
-    let channelbyte = &[0u8, channel];
-    mdev.write(channelbyte)?;
-
-    Ok(())
+fn mx_channel(channel: u8) {
+    match i2conn::muxer(channel) {
+        Ok(n) => n,
+        Err(err) => println!("Error communicating with multiplexer!: {}", err),
+    }
 }
 
-//sense: Stolen from Carl's example program; designed to open a connection
-//to a soil sensor, read the temperature/capacitance, print both, then wait
-//for the provided amount of seconds before another action is taken.
-//
-fn sense(interval_ms: u32) {
-    use embedded_hal::blocking::delay::DelayMs;
-    use linux_embedded_hal::Delay;
-    use stemma_soil_sensor::SoilSensor;
-
-    let delay = Delay {};
-    let mut sensor = SoilSensor::init(delay).unwrap();
-
-    let temp = sensor.get_temp().unwrap();
-    let cap = sensor.get_capacitance().unwrap();
-
-    println!("Soil Temperature: {:.02}", temp);
-    println!("Soil Moisture: {}", cap);
-    let mut delay = Delay {};
-    delay.delay_ms(interval_ms);
-}
-
-//main: Puts the previous functions together, swapping multiplexer ports
-//then opening a new connection to the 0x36 address.
-//
-//(Had to do it this way for now because I2C doesn't like it when you
-//establish a connection and swap the multiplexer port halfway through.)
+//main: Wraps the whole thing together. Uses the sensor_read function to bring
+//back values from the soil sensors, switching between multiplexer ports 1 and
+//2 before each reading.
 //
 fn main() {
-    muxer(1);
-    println!("\nSwitching to multiplex port 1: \n\n");
-    sense(2000);
+    let mut temp: f32;
+    let mut cap: u16;
 
-    muxer(2);
+    mx_channel(1);
+    println!("\nSwitching to multiplex port 1: \n\n");
+    temp = i2conn::sensetemp(500);
+    cap = i2conn::sensecap(500);
+    println!("Temperature: {}\nCapacitance: {}\n", temp,cap);
+
+    mx_channel(2);
     println!("\nSwitching to multiplex port 2: \n\n");
-    sense(2000);
+    temp = i2conn::sensetemp(500);
+    cap = i2conn::sensecap(500);
+    println!("Temperature: {}\nCapacitance: {}\n", temp,cap);
 }
