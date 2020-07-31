@@ -24,13 +24,16 @@ fn main() {
 
     let ports_begin: u8 = 1;
     let ports_end: u8 = 2;
-
-    for i in ports_begin..ports_end {
-        mx_channel(i);
-        println!("\nSwitching to multiplex port {}: \n\n", i);
+    
+    for r in 1..11 {
+        println!("Pass #{}:",r);
+        for i in ports_begin..ports_end + 1 {
+            mx_channel(i);
+            println!("\nSwitching to multiplex port {}: \n\n", i);
         
-        temp = i2conn::sensetemp(500);
-        cap = i2conn::sensecap(500);
-        println!("Temperature: {}\nCapacitance: {}\n", temp, cap);
+            temp = i2conn::sensetemp(500);
+            cap = i2conn::sensecap(500);
+            println!("Temperature: {}\nCapacitance: {}\n", temp, cap);
+        }
     }
 }
