@@ -1,6 +1,7 @@
 mod soil_lib;
 
 pub use crate::soil_lib::i2conn;
+pub use crate::soil_lib::stemconn;
 
 //mx_channel: This is basically just an alias for the i2conn::muxer function that 
 //handles the error. (Look at me, handling errors like a normal programmer :P)
@@ -33,8 +34,8 @@ fn main() {
             mx_channel(i);
             println!("\nSwitching to multiplex port {}: \n\n", i);
         
-            temp = i2conn::sensetemp(500);
-            cap = i2conn::sensecap(500);
+            temp = stemconn::sensetemp(500);
+            cap = stemconn::sensecap(500);
             println!("Temperature: {}\nCapacitance: {}\n", temp, cap);
         }
     }
