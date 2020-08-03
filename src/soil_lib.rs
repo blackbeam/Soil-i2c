@@ -19,16 +19,18 @@ pub mod i2conn {
 
         Ok(())
     }
+}
+
+pub mod stemconn {
+    use soil_lib::embedded_hal::blocking::delay::DelayMs;
+    use soil_lib::linux_embedded_hal::Delay;
+    use soil_lib::stemma_soil_sensor::SoilSensor;
 
     //sensetemp/sensecap: Stolen from Carl's example program; designed to open a 
     //connection to a soil sensor, read the temperature/capacitance, return it,
     //then wait for the provided amount of seconds before another action is taken.
     //
     pub fn sensetemp(interval_ms: u32) -> f32 {
-        use soil_lib::embedded_hal::blocking::delay::DelayMs;
-        use soil_lib::linux_embedded_hal::Delay;
-        use soil_lib::stemma_soil_sensor::SoilSensor;
-
         let delay = Delay {};
         let mut sensor = SoilSensor::init(delay).unwrap();
 
@@ -40,10 +42,6 @@ pub mod i2conn {
         return temp;
     }
     pub fn sensecap(interval_ms: u32) -> u16 {
-        use soil_lib::embedded_hal::blocking::delay::DelayMs;
-        use soil_lib::linux_embedded_hal::Delay;
-        use soil_lib::stemma_soil_sensor::SoilSensor;
-
         let delay = Delay {};
         let mut sensor = SoilSensor::init(delay).unwrap();
 
