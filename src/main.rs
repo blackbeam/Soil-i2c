@@ -2,11 +2,9 @@ mod soil_lib;
 
 pub use crate::soil_lib::i2conn;
 
-//sensor_read: This function is essentially just an alias to combine the muxer
-//and sense functions into one, and to handle the error. (Look at me, handling
-//errors like a normal programmer :P)
+//mx_channel: This is basically just an alias for the i2conn::muxer function that 
+//handles the error. (Look at me, handling errors like a normal programmer :P)
 //
-
 fn mx_channel(channel: u8) {
     match i2conn::muxer(channel) {
         Ok(n) => n,
@@ -14,9 +12,13 @@ fn mx_channel(channel: u8) {
     }
 }
 
-//main: Wraps the whole thing together. Uses the sensor_read function to bring
-//back values from the soil sensors, switching between multiplexer ports 1 and
-//2 before each reading.
+//main: Wraps the whole thing together. Using two constraint variables as my
+//sentinel values for swapping multiplexer ports. Takes 10 readings for each
+//port in the range of my constraints, fetching both the temperature and 
+//capacitance values at a 500ms delay, and prints them both out on one line.
+//
+//Nothing fancy, but it's pretty flexible.
+//Database functionality coming soon! (i.e. whenever I can learn how to implement ODBC...)
 //
 fn main() {
     let mut temp: f32;
