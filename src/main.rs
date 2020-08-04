@@ -6,30 +6,19 @@ mod data_mysql {
         use mysql::*;
         use mysql::prelude::*;
 
-        pub struct Reading {
-            plantname: String,
-            moisture: u16,
-            temperature: f32,
-        }
-
         let url = "PUT YOUR MYSQL SERVER URL IN HERE (I'll make the program use a config file for this later)";
         let pool = Pool::new(url)?;
         let mut conn = pool.get_conn()?;
    
         let plantno = format!("Plant {}", plnum);
-        let payload = Reading{ plantname: plantno, moisture: moistwrite, temperature: tempwrite };
-
         
         conn.exec_drop(
-            r"INSERT INTO SoilData (Plant,Readtime,Moisture,Temperature) VALUES (?)", (payload.plantname, "CURRENT_TIME", payload.moisture, payload.temperature)
+            r"INSERT INTO SoilData (Plant,Readtime,Moisture,Temperature) VALUES (?)", (plantno, "CURRENT_TIME", moistwrite, tempwrite)
         )?;
 
         Ok(())
     }
-
 }
-
-
 
 pub use crate::soil_lib::i2conn;
 pub use crate::soil_lib::stemconn;
@@ -49,8 +38,8 @@ fn mx_channel(channel: u8) {
 //port in the range of my constraints, fetching both the temperature and 
 //capacitance values at a 500ms delay, and prints them both out on one line.
 //
-//Nothing fancy, but it's pretty flexible.
-//Database functionality coming soon! (i.e. whenever I can learn how to implement ODBC...)
+//Recently added: Now it writes this stuff to a MySQL database! I'll document
+//it when I'm less busy/lazy.
 //
 fn main() {
     let mut temp: f32;
