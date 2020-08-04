@@ -1,4 +1,35 @@
 mod soil_lib;
+extern crate mysql;
+
+mod data_mysql {
+    pub fn insert(plnum: u8, tempwrite: f32, moistwrite: u16) -> Result<(), mysql::Error> {
+        use mysql::*;
+        use mysql::prelude::*;
+
+        pub struct Reading {
+            plantname: String,
+            moisture: u16,
+            temperature: f32,
+        }
+
+        let url = "PUT YOUR MYSQL SERVER URL IN HERE (I'll make the program use a config file for this later)";
+        let pool = Pool::new(url)?;
+        let mut conn = pool.get_conn()?;
+   
+        let plantno = format!("Plant {}", plnum);
+        let payload = Reading{ plantname: plantno, moisture: moistwrite, temperature: tempwrite };
+
+        
+        conn.exec_drop(
+            r"INSERT INTO SoilData (Plant,Readtime,Moisture,Temperature) VALUES (?)", (payload.plantname, "CURRENT_TIME", payload.moisture, payload.temperature)
+        )?;
+
+        Ok(())
+    }
+
+}
+
+
 
 pub use crate::soil_lib::i2conn;
 pub use crate::soil_lib::stemconn;
@@ -37,6 +68,11 @@ fn main() {
             temp = stemconn::sensetemp(500);
             cap = stemconn::sensecap(500);
             println!("Temperature: {}\nCapacitance: {}\n", temp, cap);
+            println!("Writing to mysql database...");
+            match data_mysql::insert(i, temp, cap) {
+                Ok(m) => m,
+                Err(err) => println!("Error writing to mysql!: {}", err),
+            }
         }
     }
 }
