@@ -5,7 +5,13 @@ mod soil_lib;
 pub use crate::soil_lib::i2conn;
 pub use crate::soil_lib::stemconn;
 
+//data_mysql: I'm planning to rename this module and put more SQL server options in
+//here in the future. I'll likely also move it into its own library file as well and
+//make modules for MySQL/Postgres/Microsoft SQL Server/etc.
 mod data_mysql {
+    //insert: Literally all it does is connect and insert. Planning on setting it to
+    //grab the server URL from a config file at some point, though hardcoding it could
+    //be more secure.
     pub fn insert(plnum: u8, tempwrite: f32, moistwrite: u16) -> Result<(), mysql::Error> {
         use mysql::*;
         use mysql::prelude::*;
@@ -55,7 +61,7 @@ fn main() {
             cap = stemconn::sensecap(500);
             println!("Temperature: {}\nCapacitance: {}\n", temp, cap);
             
-            println!("Writing to MySQL database...");
+            println!("Writing to database...");
             match data_mysql::insert(i, temp, cap) {
                Ok(m) => m,
                Err(err) => println!("Error writing to database!!! {}", err),
