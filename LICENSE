@@ -19,3 +19,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+This software makes use of several external libraries as dependencies. While
+such dependencies are not available in this repository in source form, the
+copyright information for this program's dependencies is listed below, and
+each is licensed under the MIT License unless otherwise specifically denoted.
+
+embedded-hal & linux-embedded-hal
+Copyright (c) 2017-2018 Jorge Aparicio
+
+rppal
+Copyright (c) 2017-2020 Rene van der Meer
+
+stemma-soil-sensor
+Copyright (c) 2020 Carl Fredrik Samson
+
+mysql
+Copyright (c) 2020 rust-mysql-common contributors
