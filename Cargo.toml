@@ -9,4 +9,4 @@ embedded-hal = "0.2.4"
 rppal = "0.11.3"
 linux-embedded-hal = "0.3.0"
 
-mysql = "18.2.0"
+mysql = { git = "https://github.com/blackbeam/rust-mysql-simple.git" }
